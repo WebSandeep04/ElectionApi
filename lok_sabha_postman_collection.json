@@ -1,0 +1,465 @@
+{
+	"info": {
+		"_postman_id": "lok-sabha-api-collection",
+		"name": "Lok Sabha API",
+		"description": "Complete CRUD API for Lok Sabha management",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/register",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"register"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/login",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"login"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Logout User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/logout",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"logout"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Lok Sabha CRUD",
+			"item": [
+				{
+					"name": "List All Lok Sabhas",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/lok-sabhas?page=1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lok-sabhas"
+							],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Specific Lok Sabha",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/lok-sabhas/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lok-sabhas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Lok Sabha",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"loksabha_name\": \"17th Lok Sabha\",\n    \"status\": \"1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/lok-sabhas",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lok-sabhas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Create Lok Sabha (Without Status)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"loksabha_name\": \"18th Lok Sabha\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/lok-sabhas",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lok-sabhas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Lok Sabha (Full)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"loksabha_name\": \"17th Lok Sabha (Updated)\",\n    \"status\": \"0\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/lok-sabhas/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lok-sabhas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Update Lok Sabha (Partial)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"status\": \"1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/lok-sabhas/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lok-sabhas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Lok Sabha",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/lok-sabhas/1",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lok-sabhas",
+								"1"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Error Testing",
+			"item": [
+				{
+					"name": "Validation Error",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{auth_token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"loksabha_name\": \"\",\n    \"status\": \"invalid\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/lok-sabhas",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lok-sabhas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Unauthorized Access",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"loksabha_name\": \"Test Lok Sabha\",\n    \"status\": \"1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/lok-sabhas",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lok-sabhas"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Not Found",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/api/lok-sabhas/99999",
+							"host": [
+								"{{base_url}}"
+							],
+							"path": [
+								"api",
+								"lok-sabhas",
+								"99999"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000"
+		},
+		{
+			"key": "auth_token",
+			"value": "your_auth_token_here"
+		}
+	]
+}

@@ -1,0 +1,284 @@
+{
+	"info": {
+		"_postman_id": "village-api-collection",
+		"name": "Village API Collection",
+		"description": "Complete CRUD operations for Village API with authentication",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"name\": \"Test User\",\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\",\n    \"password_confirmation\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/register",
+							"host": ["{{base_url}}"],
+							"path": ["register"]
+						}
+					}
+				},
+				{
+					"name": "Login User",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"email\": \"test@example.com\",\n    \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/login",
+							"host": ["{{base_url}}"],
+							"path": ["login"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Village CRUD",
+			"item": [
+				{
+					"name": "List All Villages",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/villages",
+							"host": ["{{base_url}}"],
+							"path": ["villages"]
+						}
+					}
+				},
+				{
+					"name": "Create Village",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"loksabha_id\": \"1\",\n    \"vidhansabha_id\": \"1\",\n    \"block_id\": \"1\",\n    \"panchayat_id\": \"1\",\n    \"village_choosing\": \"Direct Election\",\n    \"village_name\": \"Test Village\",\n    \"village_status\": \"1\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/villages",
+							"host": ["{{base_url}}"],
+							"path": ["villages"]
+						}
+					}
+				},
+				{
+					"name": "Show Village",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/villages/1",
+							"host": ["{{base_url}}"],
+							"path": ["villages", "1"]
+						}
+					}
+				},
+				{
+					"name": "Update Village",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"village_name\": \"Updated Village Name\",\n    \"village_choosing\": \"Indirect Election\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/villages/1",
+							"host": ["{{base_url}}"],
+							"path": ["villages", "1"]
+						}
+					}
+				},
+				{
+					"name": "Delete Village",
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "Authorization",
+								"value": "Bearer {{token}}",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/villages/1",
+							"host": ["{{base_url}}"],
+							"path": ["villages", "1"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Village Filter Endpoints",
+			"item": [
+				{
+					"name": "Villages by Lok Sabha",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/villages/lok-sabha/1",
+							"host": ["{{base_url}}"],
+							"path": ["villages", "lok-sabha", "1"]
+						}
+					}
+				},
+				{
+					"name": "Villages by Vidhan Sabha",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/villages/vidhan-sabha/1",
+							"host": ["{{base_url}}"],
+							"path": ["villages", "vidhan-sabha", "1"]
+						}
+					}
+				},
+				{
+					"name": "Villages by Block",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/villages/block/1",
+							"host": ["{{base_url}}"],
+							"path": ["villages", "block", "1"]
+						}
+					}
+				},
+				{
+					"name": "Villages by Panchayat",
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Accept",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"url": {
+							"raw": "{{base_url}}/villages/panchayat/1",
+							"host": ["{{base_url}}"],
+							"path": ["villages", "panchayat", "1"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000/api"
+		},
+		{
+			"key": "token",
+			"value": "your_auth_token_here"
+		}
+	]
+}
