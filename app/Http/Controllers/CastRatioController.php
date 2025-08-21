@@ -1,0 +1,157 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Resources\CastRatioResource;
+use App\Models\CastRatio;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Request;
+use Illuminate\Validation\ValidationException;
+
+class CastRatioController extends Controller
+{
+    /**
+     * Display a listing of the resource.
+     */
+    public function index(Request $request): JsonResponse
+    {
+        $query = CastRatio::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing', 'village', 'booth', 'caste']);
+
+        // Search functionality
+        if ($request->has('search')) {
+            $search = $request->search;
+            $query->whereHas('caste', function ($q) use ($search) {
+                $q->where('caste', 'like', "%{$search}%");
+            });
+        }
+
+        // Filter by caste_id
+        if ($request->has('caste_id')) {
+            $query->where('caste_id', $request->caste_id);
+        }
+
+        // Filter by loksabha_id
+        if ($request->has('loksabha_id')) {
+            $query->where('loksabha_id', $request->loksabha_id);
+        }
+
+        // Filter by vidhansabha_id
+        if ($request->has('vidhansabha_id')) {
+            $query->where('vidhansabha_id', $request->vidhansabha_id);
+        }
+
+        // Filter by block_id
+        if ($request->has('block_id')) {
+            $query->where('block_id', $request->block_id);
+        }
+
+        // Filter by panchayat_id
+        if ($request->has('panchayat_id')) {
+            $query->where('panchayat_id', $request->panchayat_id);
+        }
+
+        // Filter by village_id
+        if ($request->has('village_id')) {
+            $query->where('village_id', $request->village_id);
+        }
+
+        // Filter by booth_id
+        if ($request->has('booth_id')) {
+            $query->where('booth_id', $request->booth_id);
+        }
+
+        // Sorting
+        $sortBy = $request->get('sort_by', 'created_at');
+        $sortOrder = $request->get('sort_order', 'desc');
+        $query->orderBy($sortBy, $sortOrder);
+
+        // Pagination
+        $perPage = $request->get('per_page', 10);
+        $castRatios = $query->paginate($perPage);
+
+        return response()->json([
+            'cast_ratios' => CastRatioResource::collection($castRatios->items()),
+            'pagination' => [
+                'total' => $castRatios->total(),
+                'per_page' => $castRatios->perPage(),
+                'current_page' => $castRatios->currentPage(),
+                'last_page' => $castRatios->lastPage(),
+                'from' => $castRatios->firstItem(),
+                'to' => $castRatios->lastItem(),
+                'has_more_pages' => $castRatios->hasMorePages(),
+            ],
+        ]);
+    }
+
+    /**
+     * Store a newly created resource in storage.
+     */
+    public function store(Request $request): JsonResponse
+    {
+        $request->validate([
+            'loksabha_id' => 'nullable|exists:lok_sabhas,id',
+            'vidhansabha_id' => 'nullable|exists:vidhan_sabhas,id',
+            'block_id' => 'nullable|exists:blocks,id',
+            'panchayat_id' => 'nullable|exists:panchayats,id',
+            'village_choosing' => 'nullable|exists:villages,id',
+            'village_id' => 'nullable|exists:villages,id',
+            'booth_id' => 'nullable|exists:booths,id',
+            'caste_id' => 'required|exists:castes,id',
+            'caste_ratio' => 'required|integer|min:0|max:100',
+        ]);
+
+        $castRatio = CastRatio::create($request->all());
+
+        return response()->json([
+            'data' => new CastRatioResource($castRatio->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing', 'village', 'booth', 'caste'])),
+            'message' => 'Cast ratio created successfully'
+        ], 201);
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(CastRatio $castRatio): JsonResponse
+    {
+        return response()->json([
+            'data' => new CastRatioResource($castRatio->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing', 'village', 'booth', 'caste']))
+        ]);
+    }
+
+    /**
+     * Update the specified resource in storage.
+     */
+    public function update(Request $request, CastRatio $castRatio): JsonResponse
+    {
+        $request->validate([
+            'loksabha_id' => 'nullable|exists:lok_sabhas,id',
+            'vidhansabha_id' => 'nullable|exists:vidhan_sabhas,id',
+            'block_id' => 'nullable|exists:blocks,id',
+            'panchayat_id' => 'nullable|exists:panchayats,id',
+            'village_choosing' => 'nullable|exists:villages,id',
+            'village_id' => 'nullable|exists:booths,id',
+            'booth_id' => 'nullable|exists:booths,id',
+            'caste_id' => 'sometimes|required|exists:castes,id',
+            'caste_ratio' => 'sometimes|required|integer|min:0|max:100',
+        ]);
+
+        $castRatio->update($request->all());
+
+        return response()->json([
+            'data' => new CastRatioResource($castRatio->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing', 'village', 'booth', 'caste'])),
+            'message' => 'Cast ratio updated successfully'
+        ]);
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy(CastRatio $castRatio): JsonResponse
+    {
+        $castRatio->delete();
+
+        return response()->json([
+            'message' => 'Cast ratio deleted successfully'
+        ]);
+    }
+}

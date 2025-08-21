@@ -17,6 +17,7 @@ use App\Http\Controllers\EmployeeDocumentController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
+use App\Http\Controllers\CastRatioController;
 
 /*
 |--------------------------------------------------------------------------
@@ -61,6 +62,9 @@ Route::get('users/active', [UserController::class, 'getActive']);
 Route::get('users/inactive', [UserController::class, 'getInactive']);
 Route::get('users/role/{roleId}', [UserController::class, 'getByRole']);
 Route::apiResource('users', UserController::class)->only(['index', 'show']);
+
+// Public read for CastRatios
+Route::apiResource('cast-ratios', CastRatioController::class)->only(['index', 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -108,6 +112,10 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('users', UserController::class)->only(['store', 'update', 'destroy']);
     Route::post('users/{user}/activate', [UserController::class, 'activate']);
     Route::post('users/{user}/deactivate', [UserController::class, 'deactivate']);
+
+    // CastRatios protected writes
+    Route::apiResource('cast-ratios', CastRatioController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_cast_ratios');
 
     Route::apiResource('castes', CasteController::class)->only(['store', 'update', 'destroy']);
 });

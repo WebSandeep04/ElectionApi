@@ -79,7 +79,7 @@ class RoleSeeder extends Seeder
             $managerPermissions = [
                 'view_dashboard',
                 'view_employee_management', 'manage_employees',
-                'view_caste_management', 'view_caste_ratio',
+                'view_caste_management', 'view_caste_ratio', 'manage_cast_ratios',
                 'view_village_description',
                 'view_education_management',
                 'view_category_management',

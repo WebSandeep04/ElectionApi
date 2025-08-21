@@ -23,6 +23,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'manage_castes', 'display_name' => 'Manage Castes'],
             ['name' => 'view_caste_ratio', 'display_name' => 'View Caste Ratio'],
             ['name' => 'manage_caste_ratio', 'display_name' => 'Manage Caste Ratio'],
+            ['name' => 'manage_cast_ratios', 'display_name' => 'Manage Cast Ratios'],
             ['name' => 'view_village_description', 'display_name' => 'View Village Description'],
             ['name' => 'manage_village_description', 'display_name' => 'Manage Village Description'],
             ['name' => 'view_education_management', 'display_name' => 'View Education Management'],

@@ -7,13 +7,11 @@ use Illuminate\Database\Eloquent\Model;
 
 class Caste extends Model
 {
-    use HasFactory;
+	use HasFactory;
 
-    protected $table = 'caste';
-
-    protected $fillable = [
-        'caste',
-    ];
+	protected $fillable = [
+		'caste',
+	];
 }
 
 
