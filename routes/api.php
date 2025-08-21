@@ -18,6 +18,8 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CastRatioController;
+use App\Http\Controllers\EducationController;
+use App\Http\Controllers\ExpenseCategoryController;
 
 /*
 |--------------------------------------------------------------------------
@@ -65,6 +67,12 @@ Route::apiResource('users', UserController::class)->only(['index', 'show']);
 
 // Public read for CastRatios
 Route::apiResource('cast-ratios', CastRatioController::class)->only(['index', 'show']);
+
+// Public read for Educations
+Route::apiResource('educations', EducationController::class)->only(['index', 'show']);
+
+// Public read for Expense Categories
+Route::apiResource('expense-categories', ExpenseCategoryController::class)->only(['index', 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -116,6 +124,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // CastRatios protected writes
     Route::apiResource('cast-ratios', CastRatioController::class)->only(['store', 'update', 'destroy'])
         ->middleware('permission:manage_cast_ratios');
+
+    // Educations protected writes
+    Route::apiResource('educations', EducationController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_educations');
+
+    // Expense Categories protected writes
+    Route::apiResource('expense-categories', ExpenseCategoryController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_categories');
 
     Route::apiResource('castes', CasteController::class)->only(['store', 'update', 'destroy']);
 });
