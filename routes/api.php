@@ -20,6 +20,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\CastRatioController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExpenseCategoryController;
+use App\Http\Controllers\VillageDescriptionController;
 
 /*
 |--------------------------------------------------------------------------
@@ -73,6 +74,9 @@ Route::apiResource('educations', EducationController::class)->only(['index', 'sh
 
 // Public read for Expense Categories
 Route::apiResource('expense-categories', ExpenseCategoryController::class)->only(['index', 'show']);
+
+// Public read for Village Descriptions
+Route::apiResource('village-descriptions', VillageDescriptionController::class)->only(['index', 'show']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -132,6 +136,14 @@ Route::middleware('auth:sanctum')->group(function () {
     // Expense Categories protected writes
     Route::apiResource('expense-categories', ExpenseCategoryController::class)->only(['store', 'update', 'destroy'])
         ->middleware('permission:manage_categories');
+
+    // Village Descriptions protected writes
+    Route::apiResource('village-descriptions', VillageDescriptionController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_village_descriptions');
+
+    // Expense Categories protected writes
+    Route::apiResource('expense-categories', ExpenseCategoryController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_expense_categories');
 
     Route::apiResource('castes', CasteController::class)->only(['store', 'update', 'destroy']);
 });
