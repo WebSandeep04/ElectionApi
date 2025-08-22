@@ -14,7 +14,7 @@ class VillageController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = Village::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat']);
+        $query = Village::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing']);
 
         // Search by choosing or name
         if ($request->has('search')) {
@@ -61,6 +61,7 @@ class VillageController extends Controller
             'vidhansabha_id' => 'nullable|integer|exists:vidhan_sabhas,id',
             'block_id' => 'nullable|integer|exists:blocks,id',
             'panchayat_id' => 'nullable|integer|exists:panchayats,id',
+            'village_choosing_id' => 'nullable|integer|exists:village_choosings,id',
             'village_choosing' => 'nullable|string|max:255',
             'village_name' => 'nullable|string|max:255',
             'village_status' => 'nullable|string|max:255',
@@ -70,7 +71,7 @@ class VillageController extends Controller
 
         return response()->json([
             'message' => 'Village created successfully',
-            'data' => new VillageResource($village->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat']))
+            'data' => new VillageResource($village->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing']))
         ], 201);
     }
 
@@ -80,7 +81,7 @@ class VillageController extends Controller
     public function show(Village $village): JsonResponse
     {
         return response()->json([
-            'data' => new VillageResource($village->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat']))
+            'data' => new VillageResource($village->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing']))
         ]);
     }
 
@@ -94,6 +95,7 @@ class VillageController extends Controller
             'vidhansabha_id' => 'nullable|integer|exists:vidhan_sabhas,id',
             'block_id' => 'nullable|integer|exists:blocks,id',
             'panchayat_id' => 'nullable|integer|exists:panchayats,id',
+            'village_choosing_id' => 'nullable|integer|exists:village_choosings,id',
             'village_choosing' => 'nullable|string|max:255',
             'village_name' => 'nullable|string|max:255',
             'village_status' => 'nullable|string|max:255',
@@ -103,7 +105,7 @@ class VillageController extends Controller
 
         return response()->json([
             'message' => 'Village updated successfully',
-            'data' => new VillageResource($village->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat']))
+            'data' => new VillageResource($village->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing']))
         ]);
     }
 
@@ -124,7 +126,7 @@ class VillageController extends Controller
      */
     public function getByLokSabha(string $loksabhaId): JsonResponse
     {
-        $villages = Village::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat'])
+        $villages = Village::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing'])
             ->where('loksabha_id', $loksabhaId)
             ->latest()
             ->paginate(10);
@@ -147,7 +149,7 @@ class VillageController extends Controller
      */
     public function getByVidhanSabha(string $vidhansabhaId): JsonResponse
     {
-        $villages = Village::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat'])
+        $villages = Village::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing'])
             ->where('vidhansabha_id', $vidhansabhaId)
             ->latest()
             ->paginate(10);
@@ -170,7 +172,7 @@ class VillageController extends Controller
      */
     public function getByBlock(string $blockId): JsonResponse
     {
-        $villages = Village::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat'])
+        $villages = Village::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing'])
             ->where('block_id', $blockId)
             ->latest()
             ->paginate(10);
@@ -193,7 +195,7 @@ class VillageController extends Controller
      */
     public function getByPanchayat(string $panchayatId): JsonResponse
     {
-        $villages = Village::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat'])
+        $villages = Village::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing'])
             ->where('panchayat_id', $panchayatId)
             ->latest()
             ->paginate(10);

@@ -16,7 +16,9 @@ class Booth extends Model
         'vidhansabha_id',
         'block_id',
         'panchayat_id',
+        'panchayat_choosing_id',
         'village_choosing',
+        'village_choosing_id',
         'village_id',
         'booth_name',
         'booth_status'
@@ -56,5 +58,15 @@ class Booth extends Model
     public function village()
     {
         return $this->belongsTo(Village::class, 'village_id');
+    }
+
+    public function panchayatChoosing()
+    {
+        return $this->belongsTo(PanchayatChoosing::class, 'panchayat_choosing_id');
+    }
+
+    public function villageChoosing()
+    {
+        return $this->belongsTo(VillageChoosing::class, 'village_choosing_id');
     }
 }

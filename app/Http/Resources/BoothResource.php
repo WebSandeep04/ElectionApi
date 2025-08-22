@@ -20,7 +20,9 @@ class BoothResource extends JsonResource
             'vidhansabha_id' => $this->vidhansabha_id,
             'block_id' => $this->block_id,
             'panchayat_id' => $this->panchayat_id,
+            'panchayat_choosing_id' => $this->panchayat_choosing_id,
             'village_choosing' => $this->village_choosing,
+            'village_choosing_id' => $this->village_choosing_id,
             'village_id' => $this->village_id,
             'booth_name' => $this->booth_name,
             'booth_status' => $this->booth_status,
@@ -40,6 +42,20 @@ class BoothResource extends JsonResource
             }),
             'village' => $this->whenLoaded('village', function () {
                 return new VillageResource($this->village);
+            }),
+            'panchayat_choosing_data' => $this->whenLoaded('panchayatChoosing', function () {
+                return [
+                    'id' => $this->panchayatChoosing->id,
+                    'name' => $this->panchayatChoosing->name,
+                    'status' => $this->panchayatChoosing->status,
+                ];
+            }),
+            'village_choosing_data' => $this->whenLoaded('villageChoosing', function () {
+                return [
+                    'id' => $this->villageChoosing->id,
+                    'name' => $this->villageChoosing->name,
+                    'status' => $this->villageChoosing->status,
+                ];
             }),
         ];
     }

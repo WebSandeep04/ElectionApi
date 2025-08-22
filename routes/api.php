@@ -21,6 +21,8 @@ use App\Http\Controllers\CastRatioController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\VillageDescriptionController;
+use App\Http\Controllers\PanchayatChoosingController;
+use App\Http\Controllers\VillageChoosingController;
 
 /*
 |--------------------------------------------------------------------------
@@ -68,6 +70,8 @@ Route::apiResource('users', UserController::class)->only(['index', 'show']);
 
 // Public read for CastRatios
 Route::apiResource('cast-ratios', CastRatioController::class)->only(['index', 'show']);
+Route::get('cast-ratios/panchayat-choosing/{panchayatChoosingId}', [CastRatioController::class, 'getByPanchayatChoosing']);
+Route::get('cast-ratios/village-choosing/{villageChoosingId}', [CastRatioController::class, 'getByVillageChoosing']);
 
 // Public read for Educations
 Route::apiResource('educations', EducationController::class)->only(['index', 'show']);
@@ -77,6 +81,14 @@ Route::apiResource('expense-categories', ExpenseCategoryController::class)->only
 
 // Public read for Village Descriptions
 Route::apiResource('village-descriptions', VillageDescriptionController::class)->only(['index', 'show']);
+
+// Public read for Panchayat Choosings
+Route::apiResource('panchayat-choosings', PanchayatChoosingController::class)->only(['index', 'show']);
+Route::get('panchayat-choosings/active', [PanchayatChoosingController::class, 'active']);
+
+// Public read for Village Choosings
+Route::apiResource('village-choosings', VillageChoosingController::class)->only(['index', 'show']);
+Route::get('village-choosings/active', [VillageChoosingController::class, 'active']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -195,6 +207,8 @@ Route::get('booths/vidhan-sabha/{vidhansabhaId}', [BoothController::class, 'getB
 Route::get('booths/block/{blockId}', [BoothController::class, 'getByBlock']);
 Route::get('booths/panchayat/{panchayatId}', [BoothController::class, 'getByPanchayat']);
 Route::get('booths/village/{villageId}', [BoothController::class, 'getByVillage']);
+Route::get('booths/panchayat-choosing/{panchayatChoosingId}', [BoothController::class, 'getByPanchayatChoosing']);
+Route::get('booths/village-choosing/{villageChoosingId}', [BoothController::class, 'getByVillageChoosing']);
 Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('booths', BoothController::class)->only(['store', 'update', 'destroy']);
 });

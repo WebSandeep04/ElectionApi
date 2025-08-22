@@ -19,6 +19,7 @@ class PanchayatResource extends JsonResource
             'loksabha_id' => $this->loksabha_id,
             'vidhansabha_id' => $this->vidhansabha_id,
             'block_id' => $this->block_id,
+            'panchayat_choosing_id' => $this->panchayat_choosing_id,
             'panchayat_choosing' => $this->panchayat_choosing,
             'panchayat_name' => $this->panchayat_name,
             'panchayat_status' => $this->panchayat_status,
@@ -30,6 +31,13 @@ class PanchayatResource extends JsonResource
             }),
             'block' => $this->whenLoaded('block', function () {
                 return new BlockResource($this->block);
+            }),
+            'panchayat_choosing_data' => $this->whenLoaded('panchayatChoosing', function () {
+                return [
+                    'id' => $this->panchayatChoosing->id,
+                    'name' => $this->panchayatChoosing->name,
+                    'status' => $this->panchayatChoosing->status,
+                ];
             }),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

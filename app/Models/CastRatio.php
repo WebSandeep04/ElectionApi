@@ -16,8 +16,9 @@ class CastRatio extends Model
         'loksabha_id',
         'vidhansabha_id',
         'block_id',
+        'panchayat_choosing_id',
         'panchayat_id',
-        'village_choosing',
+        'village_choosing_id',
         'village_id',
         'booth_id',
         'caste_id',
@@ -61,11 +62,19 @@ class CastRatio extends Model
     }
 
     /**
+     * Get the panchayat choosing that owns the cast ratio
+     */
+    public function panchayatChoosing(): BelongsTo
+    {
+        return $this->belongsTo(PanchayatChoosing::class, 'panchayat_choosing_id');
+    }
+
+    /**
      * Get the village choosing that owns the cast ratio
      */
     public function villageChoosing(): BelongsTo
     {
-        return $this->belongsTo(Village::class, 'village_choosing');
+        return $this->belongsTo(VillageChoosing::class, 'village_choosing_id');
     }
 
     /**

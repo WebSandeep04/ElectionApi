@@ -20,6 +20,7 @@ class VillageResource extends JsonResource
             'vidhansabha_id' => $this->vidhansabha_id,
             'block_id' => $this->block_id,
             'panchayat_id' => $this->panchayat_id,
+            'village_choosing_id' => $this->village_choosing_id,
             'village_choosing' => $this->village_choosing,
             'village_name' => $this->village_name,
             'village_status' => $this->village_status,
@@ -36,6 +37,13 @@ class VillageResource extends JsonResource
             }),
             'panchayat' => $this->whenLoaded('panchayat', function () {
                 return new PanchayatResource($this->panchayat);
+            }),
+            'village_choosing_data' => $this->whenLoaded('villageChoosing', function () {
+                return [
+                    'id' => $this->villageChoosing->id,
+                    'name' => $this->villageChoosing->name,
+                    'status' => $this->villageChoosing->status,
+                ];
             }),
         ];
     }

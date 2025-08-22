@@ -16,11 +16,12 @@ return new class extends Migration
             $table->foreignId('loksabha_id')->nullable()->constrained('lok_sabhas')->onDelete('set null');
             $table->foreignId('vidhansabha_id')->nullable()->constrained('vidhan_sabhas')->onDelete('set null');
             $table->foreignId('block_id')->nullable()->constrained('blocks')->onDelete('set null');
+            $table->unsignedBigInteger('panchayat_choosing_id')->nullable();
             $table->foreignId('panchayat_id')->nullable()->constrained('panchayats')->onDelete('set null');
-            $table->foreignId('village_choosing')->nullable()->constrained('villages')->onDelete('set null');
+            $table->unsignedBigInteger('village_choosing_id')->nullable();
             $table->foreignId('village_id')->nullable()->constrained('villages')->onDelete('set null');
             $table->foreignId('booth_id')->nullable()->constrained('booths')->onDelete('set null');
-            $table->foreignId('caste_id')->constrained('castes')->onDelete('cascade');
+            $table->foreignId('caste_id')->constrained('caste')->onDelete('cascade');
             $table->integer('caste_ratio');
             $table->timestamps();
         });

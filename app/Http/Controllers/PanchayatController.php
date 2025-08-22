@@ -14,7 +14,7 @@ class PanchayatController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = Panchayat::with(['lokSabha', 'vidhanSabha', 'block']);
+        $query = Panchayat::with(['lokSabha', 'vidhanSabha', 'block', 'panchayatChoosing']);
 
         // Search by choosing or name
         if ($request->has('search')) {
@@ -61,6 +61,7 @@ class PanchayatController extends Controller
             'loksabha_id' => ['required', 'integer', 'exists:lok_sabhas,id'],
             'vidhansabha_id' => ['required', 'integer', 'exists:vidhan_sabhas,id'],
             'block_id' => ['required', 'integer', 'exists:blocks,id'],
+            'panchayat_choosing_id' => ['nullable', 'integer', 'exists:panchayat_choosings,id'],
             'panchayat_choosing' => ['required', 'string', 'max:255'],
             'panchayat_name' => ['required', 'string', 'max:255'],
             'panchayat_status' => ['sometimes', 'string', 'max:255'],
@@ -75,7 +76,7 @@ class PanchayatController extends Controller
 
         return response()->json([
             'message' => 'Panchayat created successfully',
-            'panchayat' => new PanchayatResource($panchayat->load(['lokSabha', 'vidhanSabha', 'block'])),
+            'panchayat' => new PanchayatResource($panchayat->load(['lokSabha', 'vidhanSabha', 'block', 'panchayatChoosing'])),
         ], 201);
     }
 
@@ -85,7 +86,7 @@ class PanchayatController extends Controller
     public function show(Panchayat $panchayat): JsonResponse
     {
         return response()->json([
-            'panchayat' => new PanchayatResource($panchayat->load(['lokSabha', 'vidhanSabha', 'block'])),
+            'panchayat' => new PanchayatResource($panchayat->load(['lokSabha', 'vidhanSabha', 'block', 'panchayatChoosing'])),
         ]);
     }
 
@@ -98,6 +99,7 @@ class PanchayatController extends Controller
             'loksabha_id' => ['sometimes', 'required', 'integer', 'exists:lok_sabhas,id'],
             'vidhansabha_id' => ['sometimes', 'required', 'integer', 'exists:vidhan_sabhas,id'],
             'block_id' => ['sometimes', 'required', 'integer', 'exists:blocks,id'],
+            'panchayat_choosing_id' => ['sometimes', 'nullable', 'integer', 'exists:panchayat_choosings,id'],
             'panchayat_choosing' => ['sometimes', 'required', 'string', 'max:255'],
             'panchayat_name' => ['sometimes', 'required', 'string', 'max:255'],
             'panchayat_status' => ['sometimes', 'string', 'max:255'],
@@ -107,7 +109,7 @@ class PanchayatController extends Controller
 
         return response()->json([
             'message' => 'Panchayat updated successfully',
-            'panchayat' => new PanchayatResource($panchayat->load(['lokSabha', 'vidhanSabha', 'block'])),
+            'panchayat' => new PanchayatResource($panchayat->load(['lokSabha', 'vidhanSabha', 'block', 'panchayatChoosing'])),
         ]);
     }
 
@@ -129,7 +131,7 @@ class PanchayatController extends Controller
     public function getByLokSabha(Request $request, $loksabhaId): JsonResponse
     {
         $panchayats = Panchayat::where('loksabha_id', $loksabhaId)
-            ->with(['lokSabha', 'vidhanSabha', 'block'])
+            ->with(['lokSabha', 'vidhanSabha', 'block', 'panchayatChoosing'])
             ->latest()
             ->paginate(10);
 
@@ -153,7 +155,7 @@ class PanchayatController extends Controller
     public function getByVidhanSabha(Request $request, $vidhansabhaId): JsonResponse
     {
         $panchayats = Panchayat::where('vidhansabha_id', $vidhansabhaId)
-            ->with(['lokSabha', 'vidhanSabha', 'block'])
+            ->with(['lokSabha', 'vidhanSabha', 'block', 'panchayatChoosing'])
             ->latest()
             ->paginate(10);
 
@@ -177,7 +179,7 @@ class PanchayatController extends Controller
     public function getByBlock(Request $request, $blockId): JsonResponse
     {
         $panchayats = Panchayat::where('block_id', $blockId)
-            ->with(['lokSabha', 'vidhanSabha', 'block'])
+            ->with(['lokSabha', 'vidhanSabha', 'block', 'panchayatChoosing'])
             ->latest()
             ->paginate(10);
 

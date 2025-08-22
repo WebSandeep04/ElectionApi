@@ -15,6 +15,7 @@ class Panchayat extends Model
         'loksabha_id',
         'vidhansabha_id',
         'block_id',
+        'panchayat_choosing_id',
         'panchayat_choosing',
         'panchayat_name',
         'panchayat_status',
@@ -46,6 +47,11 @@ class Panchayat extends Model
     public function block()
     {
         return $this->belongsTo(Block::class, 'block_id');
+    }
+
+    public function panchayatChoosing()
+    {
+        return $this->belongsTo(PanchayatChoosing::class, 'panchayat_choosing_id');
     }
 
     public function villages()

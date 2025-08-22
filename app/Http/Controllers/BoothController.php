@@ -14,7 +14,7 @@ class BoothController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = Booth::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village']);
+        $query = Booth::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village', 'panchayatChoosing', 'villageChoosing']);
 
         // Search by name
         if ($request->has('search')) {
@@ -57,8 +57,11 @@ class BoothController extends Controller
             'loksabha_id' => 'nullable|integer|exists:lok_sabhas,id',
             'vidhansabha_id' => 'nullable|integer|exists:vidhan_sabhas,id',
             'block_id' => 'nullable|integer|exists:blocks,id',
+            'panchayat_choosing' => 'nullable|string|max:255',
+            'panchayat_choosing_id' => 'nullable|integer|exists:panchayat_choosings,id',
             'panchayat_id' => 'nullable|integer|exists:panchayats,id',
             'village_choosing' => 'nullable|string|max:255',
+            'village_choosing_id' => 'nullable|integer|exists:village_choosings,id',
             'village_id' => 'nullable|integer|exists:villages,id',
             'booth_name' => 'nullable|string|max:255',
             'booth_status' => 'nullable|string|max:255',
@@ -68,7 +71,7 @@ class BoothController extends Controller
 
         return response()->json([
             'message' => 'Booth created successfully',
-            'data' => new BoothResource($booth->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village']))
+            'data' => new BoothResource($booth->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village', 'panchayatChoosing', 'villageChoosing']))
         ], 201);
     }
 
@@ -78,7 +81,7 @@ class BoothController extends Controller
     public function show(Booth $booth): JsonResponse
     {
         return response()->json([
-            'data' => new BoothResource($booth->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village']))
+            'data' => new BoothResource($booth->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village', 'panchayatChoosing', 'villageChoosing']))
         ]);
     }
 
@@ -92,7 +95,10 @@ class BoothController extends Controller
             'vidhansabha_id' => 'nullable|integer|exists:vidhan_sabhas,id',
             'block_id' => 'nullable|integer|exists:blocks,id',
             'panchayat_id' => 'nullable|integer|exists:panchayats,id',
+            'panchayat_choosing' => 'nullable|string|max:255',
+            'panchayat_choosing_id' => 'nullable|integer|exists:panchayat_choosings,id',
             'village_choosing' => 'nullable|string|max:255',
+            'village_choosing_id' => 'nullable|integer|exists:village_choosings,id',
             'village_id' => 'nullable|integer|exists:villages,id',
             'booth_name' => 'nullable|string|max:255',
             'booth_status' => 'nullable|string|max:255',
@@ -102,7 +108,7 @@ class BoothController extends Controller
 
         return response()->json([
             'message' => 'Booth updated successfully',
-            'data' => new BoothResource($booth->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village']))
+            'data' => new BoothResource($booth->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village', 'panchayatChoosing', 'villageChoosing']))
         ]);
     }
 
@@ -123,7 +129,7 @@ class BoothController extends Controller
      */
     public function getByLokSabha(string $loksabhaId): JsonResponse
     {
-        $booths = Booth::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village'])
+        $booths = Booth::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village', 'panchayatChoosing', 'villageChoosing'])
             ->where('loksabha_id', $loksabhaId)
             ->latest()
             ->paginate(10);
@@ -146,7 +152,7 @@ class BoothController extends Controller
      */
     public function getByVidhanSabha(string $vidhansabhaId): JsonResponse
     {
-        $booths = Booth::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village'])
+        $booths = Booth::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village', 'panchayatChoosing', 'villageChoosing'])
             ->where('vidhansabha_id', $vidhansabhaId)
             ->latest()
             ->paginate(10);
@@ -169,7 +175,7 @@ class BoothController extends Controller
      */
     public function getByBlock(string $blockId): JsonResponse
     {
-        $booths = Booth::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village'])
+        $booths = Booth::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village', 'panchayatChoosing', 'villageChoosing'])
             ->where('block_id', $blockId)
             ->latest()
             ->paginate(10);
@@ -192,7 +198,7 @@ class BoothController extends Controller
      */
     public function getByPanchayat(string $panchayatId): JsonResponse
     {
-        $booths = Booth::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village'])
+        $booths = Booth::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village', 'panchayatChoosing', 'villageChoosing'])
             ->where('panchayat_id', $panchayatId)
             ->latest()
             ->paginate(10);
@@ -215,8 +221,54 @@ class BoothController extends Controller
      */
     public function getByVillage(string $villageId): JsonResponse
     {
-        $booths = Booth::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village'])
+        $booths = Booth::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village', 'panchayatChoosing', 'villageChoosing'])
             ->where('village_id', $villageId)
+            ->latest()
+            ->paginate(10);
+
+        return response()->json([
+            'data' => BoothResource::collection($booths),
+            'pagination' => [
+                'current_page' => $booths->currentPage(),
+                'last_page' => $booths->lastPage(),
+                'per_page' => $booths->perPage(),
+                'total' => $booths->total(),
+                'from' => $booths->firstItem(),
+                'to' => $booths->lastItem(),
+            ]
+        ]);
+    }
+
+    /**
+     * Get booths by Panchayat Choosing ID
+     */
+    public function getByPanchayatChoosing(string $panchayatChoosingId): JsonResponse
+    {
+        $booths = Booth::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village', 'panchayatChoosing', 'villageChoosing'])
+            ->where('panchayat_choosing_id', $panchayatChoosingId)
+            ->latest()
+            ->paginate(10);
+
+        return response()->json([
+            'data' => BoothResource::collection($booths),
+            'pagination' => [
+                'current_page' => $booths->currentPage(),
+                'last_page' => $booths->lastPage(),
+                'per_page' => $booths->perPage(),
+                'total' => $booths->total(),
+                'from' => $booths->firstItem(),
+                'to' => $booths->lastItem(),
+            ]
+        ]);
+    }
+
+    /**
+     * Get booths by Village Choosing ID
+     */
+    public function getByVillageChoosing(string $villageChoosingId): JsonResponse
+    {
+        $booths = Booth::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'village', 'panchayatChoosing', 'villageChoosing'])
+            ->where('village_choosing_id', $villageChoosingId)
             ->latest()
             ->paginate(10);
 

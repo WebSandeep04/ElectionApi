@@ -19,8 +19,9 @@ class CastRatioResource extends JsonResource
             'loksabha_id' => $this->loksabha_id,
             'vidhansabha_id' => $this->vidhansabha_id,
             'block_id' => $this->block_id,
+            'panchayat_choosing_id' => $this->panchayat_choosing_id,
             'panchayat_id' => $this->panchayat_id,
-            'village_choosing' => $this->village_choosing,
+            'village_choosing_id' => $this->village_choosing_id,
             'village_id' => $this->village_id,
             'booth_id' => $this->booth_id,
             'caste_id' => $this->caste_id,
@@ -51,10 +52,18 @@ class CastRatioResource extends JsonResource
                     'panchayat_name' => $this->panchayat->panchayat_name,
                 ];
             }),
+            'panchayat_choosing_data' => $this->whenLoaded('panchayatChoosing', function () {
+                return [
+                    'id' => $this->panchayatChoosing->id,
+                    'name' => $this->panchayatChoosing->name,
+                    'status' => $this->panchayatChoosing->status,
+                ];
+            }),
             'village_choosing_data' => $this->whenLoaded('villageChoosing', function () {
                 return [
                     'id' => $this->villageChoosing->id,
-                    'village_name' => $this->villageChoosing->village_name,
+                    'name' => $this->villageChoosing->name,
+                    'status' => $this->villageChoosing->status,
                 ];
             }),
             'village_data' => $this->whenLoaded('village', function () {

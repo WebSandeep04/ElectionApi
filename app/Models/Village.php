@@ -16,6 +16,7 @@ class Village extends Model
         'vidhansabha_id',
         'block_id',
         'panchayat_id',
+        'village_choosing_id',
         'village_choosing',
         'village_name',
         'village_status'
@@ -50,6 +51,11 @@ class Village extends Model
     public function panchayat()
     {
         return $this->belongsTo(Panchayat::class, 'panchayat_id');
+    }
+
+    public function villageChoosing()
+    {
+        return $this->belongsTo(VillageChoosing::class, 'village_choosing_id');
     }
 
     public function booths()

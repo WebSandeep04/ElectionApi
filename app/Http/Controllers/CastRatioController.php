@@ -15,7 +15,7 @@ class CastRatioController extends Controller
      */
     public function index(Request $request): JsonResponse
     {
-        $query = CastRatio::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing', 'village', 'booth', 'caste']);
+        $query = CastRatio::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'panchayatChoosing', 'villageChoosing', 'village', 'booth', 'caste']);
 
         // Search functionality
         if ($request->has('search')) {
@@ -50,9 +50,19 @@ class CastRatioController extends Controller
             $query->where('panchayat_id', $request->panchayat_id);
         }
 
+        // Filter by panchayat_choosing_id
+        if ($request->has('panchayat_choosing_id')) {
+            $query->where('panchayat_choosing_id', $request->panchayat_choosing_id);
+        }
+
         // Filter by village_id
         if ($request->has('village_id')) {
             $query->where('village_id', $request->village_id);
+        }
+
+        // Filter by village_choosing_id
+        if ($request->has('village_choosing_id')) {
+            $query->where('village_choosing_id', $request->village_choosing_id);
         }
 
         // Filter by booth_id
@@ -69,8 +79,26 @@ class CastRatioController extends Controller
         $perPage = $request->get('per_page', 10);
         $castRatios = $query->paginate($perPage);
 
+        // Map the collection to add 'village_choosing_label'
+        $castRatiosCollection = collect($castRatios->items())->map(function ($item) {
+            $itemArray = (new CastRatioResource($item))->toArray(request());
+            // Add the label based on village_choosing value
+            if (isset($item->village_choosing)) {
+                if ($item->village_choosing == 1) {
+                    $itemArray['village_choosing_label'] = 'Ward';
+                } elseif ($item->village_choosing == 2) {
+                    $itemArray['village_choosing_label'] = 'Village';
+                } else {
+                    $itemArray['village_choosing_label'] = null;
+                }
+            } else {
+                $itemArray['village_choosing_label'] = null;
+            }
+            return $itemArray;
+        });
+
         return response()->json([
-            'cast_ratios' => CastRatioResource::collection($castRatios->items()),
+            'cast_ratios' => $castRatiosCollection,
             'pagination' => [
                 'total' => $castRatios->total(),
                 'per_page' => $castRatios->perPage(),
@@ -92,8 +120,9 @@ class CastRatioController extends Controller
             'loksabha_id' => 'nullable|exists:lok_sabhas,id',
             'vidhansabha_id' => 'nullable|exists:vidhan_sabhas,id',
             'block_id' => 'nullable|exists:blocks,id',
+            'panchayat_choosing_id' => 'nullable|exists:panchayat_choosings,id',
             'panchayat_id' => 'nullable|exists:panchayats,id',
-            'village_choosing' => 'nullable|exists:villages,id',
+            'village_choosing_id' => 'nullable|exists:village_choosings,id',
             'village_id' => 'nullable|exists:villages,id',
             'booth_id' => 'nullable|exists:booths,id',
             'caste_id' => 'required|exists:castes,id',
@@ -103,7 +132,7 @@ class CastRatioController extends Controller
         $castRatio = CastRatio::create($request->all());
 
         return response()->json([
-            'data' => new CastRatioResource($castRatio->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing', 'village', 'booth', 'caste'])),
+            'data' => new CastRatioResource($castRatio->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'panchayatChoosing', 'villageChoosing', 'village', 'booth', 'caste'])),
             'message' => 'Cast ratio created successfully'
         ], 201);
     }
@@ -114,7 +143,7 @@ class CastRatioController extends Controller
     public function show(CastRatio $castRatio): JsonResponse
     {
         return response()->json([
-            'data' => new CastRatioResource($castRatio->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing', 'village', 'booth', 'caste']))
+            'data' => new CastRatioResource($castRatio->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'panchayatChoosing', 'villageChoosing', 'village', 'booth', 'caste']))
         ]);
     }
 
@@ -127,9 +156,10 @@ class CastRatioController extends Controller
             'loksabha_id' => 'nullable|exists:lok_sabhas,id',
             'vidhansabha_id' => 'nullable|exists:vidhan_sabhas,id',
             'block_id' => 'nullable|exists:blocks,id',
+            'panchayat_choosing_id' => 'nullable|exists:panchayat_choosings,id',
             'panchayat_id' => 'nullable|exists:panchayats,id',
-            'village_choosing' => 'nullable|exists:villages,id',
-            'village_id' => 'nullable|exists:booths,id',
+            'village_choosing_id' => 'nullable|exists:village_choosings,id',
+            'village_id' => 'nullable|exists:villages,id',
             'booth_id' => 'nullable|exists:booths,id',
             'caste_id' => 'sometimes|required|exists:castes,id',
             'caste_ratio' => 'sometimes|required|integer|min:0|max:100',
@@ -138,7 +168,7 @@ class CastRatioController extends Controller
         $castRatio->update($request->all());
 
         return response()->json([
-            'data' => new CastRatioResource($castRatio->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'villageChoosing', 'village', 'booth', 'caste'])),
+            'data' => new CastRatioResource($castRatio->load(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'panchayatChoosing', 'villageChoosing', 'village', 'booth', 'caste'])),
             'message' => 'Cast ratio updated successfully'
         ]);
     }
@@ -152,6 +182,52 @@ class CastRatioController extends Controller
 
         return response()->json([
             'message' => 'Cast ratio deleted successfully'
+        ]);
+    }
+
+    /**
+     * Get cast ratios by Panchayat Choosing ID
+     */
+    public function getByPanchayatChoosing(string $panchayatChoosingId): JsonResponse
+    {
+        $castRatios = CastRatio::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'panchayatChoosing', 'villageChoosing', 'village', 'booth', 'caste'])
+            ->where('panchayat_choosing_id', $panchayatChoosingId)
+            ->latest()
+            ->paginate(10);
+
+        return response()->json([
+            'data' => CastRatioResource::collection($castRatios),
+            'pagination' => [
+                'current_page' => $castRatios->currentPage(),
+                'last_page' => $castRatios->lastPage(),
+                'per_page' => $castRatios->perPage(),
+                'total' => $castRatios->total(),
+                'from' => $castRatios->firstItem(),
+                'to' => $castRatios->lastItem(),
+            ]
+        ]);
+    }
+
+    /**
+     * Get cast ratios by Village Choosing ID
+     */
+    public function getByVillageChoosing(string $villageChoosingId): JsonResponse
+    {
+        $castRatios = CastRatio::with(['lokSabha', 'vidhanSabha', 'block', 'panchayat', 'panchayatChoosing', 'villageChoosing', 'village', 'booth', 'caste'])
+            ->where('village_choosing_id', $villageChoosingId)
+            ->latest()
+            ->paginate(10);
+
+        return response()->json([
+            'data' => CastRatioResource::collection($castRatios),
+            'pagination' => [
+                'current_page' => $castRatios->currentPage(),
+                'last_page' => $castRatios->lastPage(),
+                'per_page' => $castRatios->perPage(),
+                'total' => $castRatios->total(),
+                'from' => $castRatios->firstItem(),
+                'to' => $castRatios->lastItem(),
+            ]
         ]);
     }
 }
