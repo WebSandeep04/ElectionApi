@@ -8,6 +8,8 @@ use Illuminate\Database\Seeder;
 use Database\Seeders\FormBuilderSeeder;
 use Database\Seeders\EmployeeSeeder;
 use Database\Seeders\RoleSeeder;
+use Database\Seeders\CasteCategorySeeder;
+use Database\Seeders\CasteSeeder;
 
 class DatabaseSeeder extends Seeder
 {
@@ -23,6 +25,8 @@ class DatabaseSeeder extends Seeder
 			RoleSeeder::class,
 			FormBuilderSeeder::class,
 			EmployeeSeeder::class,
+			CasteCategorySeeder::class, // Seed categories first
+			CasteSeeder::class, // Then seed castes with category relationships
 		]);
 
         // Ensure the test user exists (after roles seeded so role_id resolves)

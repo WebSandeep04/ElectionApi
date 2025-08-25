@@ -18,6 +18,7 @@ use App\Http\Controllers\RoleController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CastRatioController;
+use App\Http\Controllers\CasteCategoryController;
 use App\Http\Controllers\EducationController;
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\VillageDescriptionController;
@@ -97,6 +98,12 @@ Route::middleware('auth:sanctum')->group(function () {
 
 // Caste CRUD
 Route::apiResource('castes', CasteController::class)->only(['index', 'show']);
+Route::get('castes/category/{categoryId}', [CasteController::class, 'getByCategory']);
+Route::get('castes/unassigned', [CasteController::class, 'getUnassigned']);
+
+// Caste Category CRUD
+Route::apiResource('caste-categories', CasteCategoryController::class)->only(['index', 'show']);
+Route::get('caste-categories/{categoryId}/castes', [CasteCategoryController::class, 'getCastesByCategory']);
 
 // Forms public read
 Route::get('/forms', [FormController::class, 'index']);
@@ -109,22 +116,30 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/forms/{id}', [FormController::class, 'destroy']);
 
     // Employee Types protected writes
-    Route::apiResource('employee-types', EmployeeTypeController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('employee-types', EmployeeTypeController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_employee_types');
 
     // Employees protected writes
-    Route::apiResource('employees', EmployeeController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('employees', EmployeeController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_employees');
 
     // Employee Documents protected writes
-    Route::apiResource('employee-documents', EmployeeDocumentController::class)->only(['store', 'update', 'destroy']);
-    Route::post('employee-documents/{document}/verify', [EmployeeDocumentController::class, 'verify']);
-    Route::post('employee-documents/{document}/unverify', [EmployeeDocumentController::class, 'unverify']);
+    Route::apiResource('employee-documents', EmployeeDocumentController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_employee_documents');
+    Route::post('employee-documents/{document}/verify', [EmployeeDocumentController::class, 'verify'])
+        ->middleware('permission:verify_employee_documents');
+    Route::post('employee-documents/{document}/unverify', [EmployeeDocumentController::class, 'unverify'])
+        ->middleware('permission:unverify_employee_documents');
 
     // Roles protected writes (require manage_roles)
     Route::middleware('permission:manage_roles')->group(function () {
         Route::apiResource('roles', RoleController::class)->only(['store', 'update', 'destroy']);
-        Route::post('roles/{role}/activate', [RoleController::class, 'activate']);
-        Route::post('roles/{role}/deactivate', [RoleController::class, 'deactivate']);
-        Route::post('roles/{role}/permissions', [RoleController::class, 'syncPermissions']);
+        Route::post('roles/{role}/activate', [RoleController::class, 'activate'])
+            ->middleware('permission:activate_roles');
+        Route::post('roles/{role}/deactivate', [RoleController::class, 'deactivate'])
+            ->middleware('permission:deactivate_roles');
+        Route::post('roles/{role}/permissions', [RoleController::class, 'syncPermissions'])
+            ->middleware('permission:sync_role_permissions');
     });
 
     // Permissions protected writes (require manage_permissions)
@@ -133,9 +148,12 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Users protected writes
-    Route::apiResource('users', UserController::class)->only(['store', 'update', 'destroy']);
-    Route::post('users/{user}/activate', [UserController::class, 'activate']);
-    Route::post('users/{user}/deactivate', [UserController::class, 'deactivate']);
+    Route::apiResource('users', UserController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_users');
+    Route::post('users/{user}/activate', [UserController::class, 'activate'])
+        ->middleware('permission:activate_users');
+    Route::post('users/{user}/deactivate', [UserController::class, 'deactivate'])
+        ->middleware('permission:deactivate_users');
 
     // CastRatios protected writes
     Route::apiResource('cast-ratios', CastRatioController::class)->only(['store', 'update', 'destroy'])
@@ -157,20 +175,31 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::apiResource('expense-categories', ExpenseCategoryController::class)->only(['store', 'update', 'destroy'])
         ->middleware('permission:manage_expense_categories');
 
-    Route::apiResource('castes', CasteController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('castes', CasteController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_castes');
+    Route::post('castes/{caste}/assign-category', [CasteController::class, 'assignToCategory'])
+        ->middleware('permission:manage_castes');
+    Route::post('castes/{caste}/remove-category', [CasteController::class, 'removeFromCategory'])
+        ->middleware('permission:manage_castes');
+    
+    // Caste Categories protected writes
+    Route::apiResource('caste-categories', CasteCategoryController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_caste_categories');
 });
 
 // Lok Sabha CRUD
 Route::apiResource('lok-sabhas', LokSabhaController::class)->only(['index', 'show']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('lok-sabhas', LokSabhaController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('lok-sabhas', LokSabhaController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_lok_sabha');
 });
 
 // Vidhan Sabha CRUD
 Route::apiResource('vidhan-sabhas', VidhanSabhaController::class)->only(['index', 'show']);
 Route::get('vidhan-sabhas/lok-sabha/{loksabhaId}', [VidhanSabhaController::class, 'getByLokSabha']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('vidhan-sabhas', VidhanSabhaController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('vidhan-sabhas', VidhanSabhaController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_vidhan_sabha');
 });
 
 // Block CRUD
@@ -178,7 +207,8 @@ Route::apiResource('blocks', BlockController::class)->only(['index', 'show']);
 Route::get('blocks/lok-sabha/{loksabhaId}', [BlockController::class, 'getByLokSabha']);
 Route::get('blocks/vidhan-sabha/{vidhansabhaId}', [BlockController::class, 'getByVidhanSabha']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('blocks', BlockController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('blocks', BlockController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_blocks');
 });
 
 // Panchayat CRUD
@@ -187,7 +217,8 @@ Route::get('panchayats/lok-sabha/{loksabhaId}', [PanchayatController::class, 'ge
 Route::get('panchayats/vidhan-sabha/{vidhansabhaId}', [PanchayatController::class, 'getByVidhanSabha']);
 Route::get('panchayats/block/{blockId}', [PanchayatController::class, 'getByBlock']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('panchayats', PanchayatController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('panchayats', PanchayatController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_panchayats');
 });
 
 // Village CRUD
@@ -197,7 +228,8 @@ Route::get('villages/vidhan-sabha/{vidhansabhaId}', [VillageController::class, '
 Route::get('villages/block/{blockId}', [VillageController::class, 'getByBlock']);
 Route::get('villages/panchayat/{panchayatId}', [VillageController::class, 'getByPanchayat']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('villages', VillageController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('villages', VillageController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_villages');
 });
 
 // Booth CRUD
@@ -210,5 +242,6 @@ Route::get('booths/village/{villageId}', [BoothController::class, 'getByVillage'
 Route::get('booths/panchayat-choosing/{panchayatChoosingId}', [BoothController::class, 'getByPanchayatChoosing']);
 Route::get('booths/village-choosing/{villageChoosingId}', [BoothController::class, 'getByVillageChoosing']);
 Route::middleware('auth:sanctum')->group(function () {
-    Route::apiResource('booths', BoothController::class)->only(['store', 'update', 'destroy']);
+    Route::apiResource('booths', BoothController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_booths');
 });

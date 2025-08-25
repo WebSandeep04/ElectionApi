@@ -11,7 +11,16 @@ class Caste extends Model
 
 	protected $fillable = [
 		'caste',
+		'category_id',
 	];
+
+	/**
+	 * Get the category that this caste belongs to.
+	 */
+	public function category()
+	{
+		return $this->belongsTo(CasteCategory::class, 'category_id');
+	}
 }
 
 

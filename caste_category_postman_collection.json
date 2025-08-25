@@ -1,0 +1,133 @@
+{
+  "info": {
+    "name": "Caste Category API",
+    "description": "API collection for managing caste categories and their relationships with castes",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Get All Categories",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/caste-categories",
+          "host": ["{{base_url}}"],
+          "path": ["caste-categories"]
+        },
+        "description": "Get all caste categories with their associated castes"
+      }
+    },
+    {
+      "name": "Get Category by ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/caste-categories/1",
+          "host": ["{{base_url}}"],
+          "path": ["caste-categories", "1"]
+        },
+        "description": "Get a specific category by ID with its castes"
+      }
+    },
+    {
+      "name": "Get Castes by Category ID",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/caste-categories/1/castes",
+          "host": ["{{base_url}}"],
+          "path": ["caste-categories", "1", "castes"]
+        },
+        "description": "Get all castes that belong to a specific category"
+      }
+    },
+    {
+      "name": "Create Category",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "description": "Authentication token required"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"New Category\",\n  \"description\": \"Description for the new category\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/caste-categories",
+          "host": ["{{base_url}}"],
+          "path": ["caste-categories"]
+        },
+        "description": "Create a new caste category (requires authentication)"
+      }
+    },
+    {
+      "name": "Update Category",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          },
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "description": "Authentication token required"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"name\": \"Updated Category Name\",\n  \"description\": \"Updated description\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/caste-categories/1",
+          "host": ["{{base_url}}"],
+          "path": ["caste-categories", "1"]
+        },
+        "description": "Update an existing category (requires authentication)"
+      }
+    },
+    {
+      "name": "Delete Category",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Authorization",
+            "value": "Bearer {{token}}",
+            "description": "Authentication token required"
+          }
+        ],
+        "url": {
+          "raw": "{{base_url}}/caste-categories/1",
+          "host": ["{{base_url}}"],
+          "path": ["caste-categories", "1"]
+        },
+        "description": "Delete a category (requires authentication)"
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://localhost:8000/api",
+      "description": "Base URL for the API"
+    },
+    {
+      "key": "token",
+      "value": "your_auth_token_here",
+      "description": "Authentication token for protected endpoints"
+    }
+  ]
+}
