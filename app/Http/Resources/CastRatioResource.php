@@ -25,6 +25,7 @@ class CastRatioResource extends JsonResource
             'village_id' => $this->village_id,
             'booth_id' => $this->booth_id,
             'caste_id' => $this->caste_id,
+            'category_id' => $this->category_id,
             'caste_ratio' => $this->caste_ratio,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
@@ -82,6 +83,13 @@ class CastRatioResource extends JsonResource
                 return [
                     'id' => $this->caste->id,
                     'caste_name' => $this->caste->caste,
+                ];
+            }),
+            'category_data' => $this->whenLoaded('category', function () {
+                return [
+                    'id' => $this->category->id,
+                    'name' => $this->category->name,
+                    'description' => $this->category->description,
                 ];
             }),
         ];

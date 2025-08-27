@@ -22,6 +22,7 @@ class CastRatio extends Model
         'village_id',
         'booth_id',
         'caste_id',
+        'category_id',
         'caste_ratio',
     ];
 
@@ -99,5 +100,13 @@ class CastRatio extends Model
     public function caste(): BelongsTo
     {
         return $this->belongsTo(Caste::class, 'caste_id');
+    }
+
+    /**
+     * Get the caste category that owns the cast ratio
+     */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(CasteCategory::class, 'category_id');
     }
 }

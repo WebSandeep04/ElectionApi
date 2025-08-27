@@ -73,6 +73,8 @@ Route::apiResource('users', UserController::class)->only(['index', 'show']);
 Route::apiResource('cast-ratios', CastRatioController::class)->only(['index', 'show']);
 Route::get('cast-ratios/panchayat-choosing/{panchayatChoosingId}', [CastRatioController::class, 'getByPanchayatChoosing']);
 Route::get('cast-ratios/village-choosing/{villageChoosingId}', [CastRatioController::class, 'getByVillageChoosing']);
+Route::get('cast-ratios/category/{categoryId}', [CastRatioController::class, 'getByCategory']);
+Route::get('cast-ratios/unassigned', [CastRatioController::class, 'getUnassigned']);
 
 // Public read for Educations
 Route::apiResource('educations', EducationController::class)->only(['index', 'show']);
@@ -157,6 +159,10 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // CastRatios protected writes
     Route::apiResource('cast-ratios', CastRatioController::class)->only(['store', 'update', 'destroy'])
+        ->middleware('permission:manage_cast_ratios');
+    Route::post('cast-ratios/{castRatio}/assign-category', [CastRatioController::class, 'assignToCategory'])
+        ->middleware('permission:manage_cast_ratios');
+    Route::post('cast-ratios/{castRatio}/remove-category', [CastRatioController::class, 'removeFromCategory'])
         ->middleware('permission:manage_cast_ratios');
 
     // Educations protected writes
